@@ -1,0 +1,13 @@
+<mat-card>
+    <mat-card-title>
+        Statistics
+    </mat-card-title>
+    <mat-card-subtitle>
+        Word and character statistics
+    </mat-card-subtitle>
+    <mat-card-content>
+        <p>{{characterStatistics}}</p>        
+        <p *ngIf="charUnigram">Most frequent characters: <code>{{charUnigram}}</code></p>
+        <p *ngIf="wordUnigram">Most frequent words: <code>{{wordUnigram}}</code></p>
+    </mat-card-content>
+</mat-card>

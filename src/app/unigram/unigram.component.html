@@ -1,0 +1,16 @@
+<mat-card>
+    <mat-card-title>
+        Unigram
+    </mat-card-title>
+    <mat-card-subtitle>
+        Compare character statistics
+    </mat-card-subtitle>
+    <mat-card-content>
+        <canvas baseChart *ngIf="showChart"
+            [datasets]="chart.data"
+            [labels]="chart.labels"
+            [options]="chart.options"
+            chartType="bar">
+        </canvas>
+    </mat-card-content>
+</mat-card>
