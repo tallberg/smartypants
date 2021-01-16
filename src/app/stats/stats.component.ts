@@ -40,11 +40,11 @@ export class StatsComponent implements OnInit, OnChanges {
 
   updateCharUnigram() {
     if (this.input.length > this._significantNumber) {
-      const occurancesIgnoreCase = StatisticsService.getOccurances(this.input.toLocaleUpperCase());
-      const sortedChars = StatisticsService.sortKeysByValue(occurancesIgnoreCase);
+      const occurances = StatisticsService.getOccurances(this.input);
+      const sortedChars = StatisticsService.sortKeysByValue(occurances);
       let commonChars = [];
       for (let i = 0; i < sortedChars.length && i < 11; i++) {
-         commonChars.push(`'${sortedChars[i]}'(${occurancesIgnoreCase[sortedChars[i]]})`);
+         commonChars.push(`'${sortedChars[i]}'(${occurances[sortedChars[i]]})`);
       }
       this.charUnigram = commonChars.join(', ');
     } else {

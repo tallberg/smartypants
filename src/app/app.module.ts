@@ -13,13 +13,15 @@ import { StatsComponent } from './stats/stats.component';
 import { ChartsModule } from 'ng2-charts';
 import { UnigramComponent } from './unigram/unigram.component';
 import { ConvertComponent } from './convert/convert.component';
+import { SubstitutionComponent } from './substitution/substitution.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     StatsComponent,
     UnigramComponent,
-    ConvertComponent
+    ConvertComponent,
+    SubstitutionComponent
   ],
   imports: [
     BrowserModule,

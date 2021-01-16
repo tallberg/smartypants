@@ -9,8 +9,8 @@ export interface occurances {
 })
 
 export class StatisticsService {
-  private static _alphabet = 'abcdefghijklmnopqrstuvwxyz';
-  private static _nonAlphaRx = new RegExp(`[^a-z]`, 'g');
+  private static _alphabet = 'abcdefghijklmnopqrstuvwxyzåäöæø';
+  private static _nonAlphaRx = new RegExp(`[^a-zåäöæø]`, 'g');
 
   constructor() { }
 
@@ -37,8 +37,8 @@ export class StatisticsService {
 
   public static getWords(input: string): string[] {
     const rx = /\s/.test(this._alphabet) 
-      ? new RegExp(`[^${this._alphabet}]`, 'g')
-      : new RegExp(`[^${this._alphabet}\\s]`, 'g');
+      ? new RegExp(`[^${this._alphabet}]`, 'gi')
+      : new RegExp(`[^${this._alphabet}\\s]`, 'gi');
     input = input.replace(rx, '');
     input = input.replace(/\s+/g, ' ');
     return input.split(' ');

@@ -22,7 +22,7 @@ export class UnigramComponent implements OnInit, OnChanges {
   constructor() { }
 
   ngOnInit(): void {
-    this.chart.options = {      
+    this.chart.options = {
       responsive: true,
       scales: { xAxes: [{}], yAxes: [{
         ticks: {
@@ -37,23 +37,35 @@ export class UnigramComponent implements OnInit, OnChanges {
     this.updateChart();
   }
   
-  private toPercant(n: number): number {
+  private toPercent(n: number): number {
     return Math.round(n*10000)/100;
   }
 
   updateChart() {
-    const az = this.input.toUpperCase().replace(/\W/g,'');
+    const az = this.input.replace(/[^\wåäö]/ig,'');
     this.showChart = false;
     if (az.length < 20) { return; }
     const azOccurances = {};
     for(let c of az) {
       azOccurances[c] = ++azOccurances[c] || 1;
     }
-    if (Object.keys(azOccurances).length < 10) { return; }
+    if (Object.keys(azOccurances).length < 10) { return; }    
     const sum = Object.values(azOccurances).reduce((a: number, b: number) => a + b) as number;
-    const keys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');    
-    const data = keys.map(k => azOccurances[k] && this.toPercant(azOccurances[k]/sum) || 0);
-    this.chart.labels = keys;
+    const keys = Object.keys(azOccurances).join('');
+    
+    let chars = /[0-9]/.test(keys) && '0123456789' || '';
+    if (/[a-zåäö]/.test(keys)) {
+      chars += 'abcdefghijklmnopqrstuvwxyz';
+      chars += /[åäö]/i.test(keys) && 'åäö' || '';
+    };
+    if (/[A-ZÅÄÖ]/.test(keys)) {
+      chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      chars += /[åäö]/i.test(keys) && 'ÅÄÖ' || '';
+    };
+    const labels = chars.split('')
+    const data = labels.map(k => azOccurances[k] && this.toPercent(azOccurances[k]/sum) || 0);
+    //const data = labels.map(k => azOccurances[k] || 0);
+    this.chart.labels = labels;
     this.chart.data = [{ data: data, label: 'input' }];
     this.showChart = true;
   }

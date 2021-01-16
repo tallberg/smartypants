@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card *ngIf="showChart">
     <mat-card-title>
         Unigram
     </mat-card-title>
@@ -6,7 +6,7 @@
         Compare character statistics
     </mat-card-subtitle>
     <mat-card-content>
-        <canvas baseChart *ngIf="showChart"
+        <canvas baseChart
             [datasets]="chart.data"
             [labels]="chart.labels"
             [options]="chart.options"
