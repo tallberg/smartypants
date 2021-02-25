@@ -5,6 +5,7 @@
     matAutosizeMaxRows="20" 
     placeholder="I'm ready for anything..."
     [(ngModel)]="input"
+    (keyup)=onInputKeyUp($event)
     ></textarea>
 </mat-form-field>
 <app-stats [input]="input"></app-stats>

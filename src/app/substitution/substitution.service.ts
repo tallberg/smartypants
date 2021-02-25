@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 export interface solution {
   key: string|number,
   result: string,
-  delimitedResult: string,
+  delimitedResult?: string,
   stats?: cryptoStatistics
 } 
 
@@ -294,8 +294,8 @@ export class Tools {
     }
   }
 
-  public static unigram(txt: string, alpha: string) {    
-    const unigram = {};
+  public static unigram(txt: string, alpha: string): {char?: number} {    
+    const unigram: {char?: number} = {};
     const chars = {}
     for (let i = 0; i < alpha.length; i++) {
       chars[alpha.charAt(i)] = 0;
@@ -567,6 +567,41 @@ export class RotN {
 
 }
 
+/**
+ * The Vigenère cipher is a method of encrypting alphabetic text by using a series of interwoven Caesar ciphers, 
+ * based on the letters of a keyword. It employs a form of polyalphabetic substitution
+ */
+export class Vigenere {
+  private static _alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+  constructor() { }
+
+  public static setAlphabet(alphabet: string): void {
+    this._alphabet = alphabet;
+  }
+
+  public static encrypt(plaintext: string, key: string) {
+    const alpha = this._alphabet;
+    let cipher = '';
+    let textPos = 0;
+    for (let c of plaintext) {
+      if(alpha.indexOf(c) === -1) {
+        cipher += c;
+        continue;
+      }
+      let charIndex = alpha.indexOf(c);
+      let keyIndex = alpha.indexOf(key.charAt(textPos++ % key.length));
+      cipher += alpha.charAt((charIndex + keyIndex) % alpha.length);      
+    }
+    return cipher;
+  }
+
+  public static decrypt(crypto: string, key: string) {
+  
+  }
+
+} 
+
 export class Deranged {
   private static _alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -620,6 +655,10 @@ export class SubstitutionService {
    console.log(Tools.delimit('AUTISMISKNOWNASASPECTRUMDISORDERBECAUSETHEREISWIDEVARIATIONINTHETYPEANDSEVERITYOFSYMPTOMSPEOPLEEXPERIENCEASDOCCURSINALLETHNICRACIALANDECONOMICGROUPSALTHOUGHASDCANBEALIFELONGDISORDERTREATMENTSANDSERVICESCANIMPROVEAPERSONSSYMPTOMSANDABILITYTOFUNCTION', Tools.stats.en.commonWords)); 
   }
 
+  public static testVigenere(){
+    console.log(Vigenere.encrypt('AAA AAA HEJSAN', 'ABC'));
+  }
+
   /**
    * Decrypt with fibonacci sequence as key
    * @param cipher 
@@ -648,10 +687,10 @@ export class SubstitutionService {
    * A Caesar cipher, also known as Caesar's cipher, the shift cipher, Caesar's code or Caesar shift, is one of the simplest and most widely known encryption techniques. It is a type of substitution cipher in which each letter in the plaintext is replaced by a letter some fixed number of positions down the alphabet. For example, with a left shift of 3, D would be replaced by A, E would become B, and so on.
    * @param cipher 
    */
-  public static caesar(cipher: string): string {
-    const best = RotN.solve(cipher);
+  public static caesar(cipher: string): solution {
+    const best = RotN.solve(cipher.toLocaleUpperCase());
     console.log('Caesar best result', best); 
-    return best.result;
+    return best;
   }
 
   /**
@@ -661,7 +700,7 @@ export class SubstitutionService {
    * @param chipher 
    */
   public static atbash(chipher: string): string {
-    return Deranged.encrypt(chipher, this._alphabet.split('').reverse().join(''));
+    return Deranged.encrypt(chipher.toLocaleUpperCase(), this._alphabet.split('').reverse().join(''));
   }
 
 }

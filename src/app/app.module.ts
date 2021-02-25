@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button'
 
 import { AppComponent } from './app.component';
 import { StatsComponent } from './stats/stats.component';
@@ -28,6 +29,7 @@ import { SubstitutionComponent } from './substitution/substitution.component';
     BrowserAnimationsModule,
     MatInputModule,
     MatCardModule,
+    MatButtonModule,
     MatFormFieldModule,
     FormsModule,
     ChartsModule

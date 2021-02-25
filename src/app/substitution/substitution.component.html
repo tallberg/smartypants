@@ -3,15 +3,43 @@
         Simple substitution chipher
     </mat-card-title>
     <mat-card-subtitle>
-        Break simple substitution chiphers
+        Break simple substitution chiphers. Assuming original alphabet is A-Z, spaces are not substituted.
     </mat-card-subtitle>
-    <mat-card-content>
+    <mat-card-content style="overflow-y: auto">
         <table>
+            <thead>
+                <tr>
+                    <th>Cipher</th><th>Key</th><th>Solution</th>
+                </tr>
+            </thead>
             <tbody>
-                <tr><th>Atbash (Reverse alphabet)</th><td>{{atbash}}</td></tr>
-                <tr><th>Caesar</th><td>{{caesar}}</td></tr>
+                <tr><th>Atbash</th><td>Reverse alphabet</td><td>{{atbash}}</td></tr>
+                <tr><th>Caesar</th><td>{{caesar.key}}</td><td>{{caesar.result}}</td></tr>
                 <!-- <tr><th>Fibonacci</th><td>{{fibonacci}}</td></tr>-->
             </tbody>
         </table>
+        <h3>Do it yourself</h3>
+        <table class="solver">
+            <tr>
+                <th>Alphabet</th><td *ngFor="let a of alphabet">{{a}}</td>
+            </tr><tr>
+                <th>Substitution</th><td *ngFor="let s of substitution; let i = index; trackBy: customTrackBy"><input [(ngModel)]="substitution[i]" (change)="onSubstitutionChange()" /></td>
+            </tr><tr>
+                <th>Index</th><td *ngFor="let s of substitution, let i = index">{{i}}</td>
+            </tr>
+            <tr><td style="height: 5px;"></td></tr>
+            <tr>
+                <th>Crypto</th><td *ngFor="let c of crypto">{{c}}</td>
+            </tr><tr>
+                <th>Plaintext</th>
+                <td *ngFor="let p of plaintext; let i = index; trackBy: customTrackBy">
+                    <input [ngClass]="{'changed' : plaintext[i] !== crypto[i]}" *ngIf="p!==' '" name="{{'plain_'+i}}" [(ngModel)]="plaintext[i]" (keyup)="onPlaintextKeyUp($event, i)" />
+                </td>
+            </tr>
+            <tr>
+                <th><button mat-stroked-button color="warn" type="button" (click)="reset()">Reset</button></th>
+            </tr>
+        </table>
+        
     </mat-card-content>
 </mat-card>

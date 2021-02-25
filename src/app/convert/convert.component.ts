@@ -113,14 +113,27 @@ fromBin(bin: string): void {
 fromText(text: string) {
     if (text.length > 10 && !/[a-z]/i.test(text)) { return; }
     const ascii = text.split('').map(c => c.charCodeAt(0));    
+    // Binary
     if(text.length < 100) {
       const bin = ascii.map(a => this.dec2bin(a)).join(' ');
       this.tmpConversions.push({from: 'Text', to: 'Binary', value: bin});  
     }
+    // Hex
     const hex = ascii.map(a =>  this.dec2hex(a).padStart(2, '0')).join(' ');
-    this.tmpConversions.push({from: 'Text', to: 'Hex', value: hex});
-    const b64 = btoa(text);
-    this.tmpConversions.push({from: 'Text', to: 'Base64', value: b64});
+    this.tmpConversions.push({from: 'Text', to: 'Hex', value: hex});    
+    // Base64
+    try {
+      const b64 = btoa(text);
+      this.tmpConversions.push({from: 'Text', to: 'Base64', value: b64});  
+    } catch(e) {
+      console.error(e);
+    }
+    // URI
+    if (/[^\w_.\~!*'\(\);:@&=+$,\/\?#\[%-\]\+]/.test(text)) {
+      this.tmpConversions.push({from: 'Text', to: 'URI', value: encodeURI(text)});
+    } else if (/^([\w_.\~!*'\(\);:@&=+$,\/\?#\[%-\]\+]+(%[0-9A-F][0-9A-F])+[\w_.\~!*'\(\);:@&=+$,\/\?#\[%-\]\+]*)+$/.test(text)) {
+      this.tmpConversions.push({from: 'URI', to: 'Text', value: decodeURI(text)});
+    }
 }
 
 fromB64(b64: string)  {
