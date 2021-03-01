@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 import { solution, SubstitutionService } from './substitution.service';
+import { DictionaryService  } from '../shared/services/dictionary.service';
+import { LeadingComment } from '@angular/compiler';
 
 @Component({
   selector: 'app-substitution',
@@ -22,6 +24,7 @@ export class SubstitutionComponent implements OnInit, OnChanges {
   alphaShift = [];
   numberShift = [];
   plaintext = [];
+  sugestions = {};
 
   constructor() { }
 
@@ -72,6 +75,36 @@ export class SubstitutionComponent implements OnInit, OnChanges {
   reset(){
     this.substitution = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
     this.onSubstitutionChange();
+  }
+
+  public keepOriginalOrder = (a: any, _: any) => a.key
+
+  getSugestions() {
+    // TODO: split without cleaning up and classify by word, hyphenated, start and end o sentance, words after comma ect. 
+    // Add all that fancy frequency analysis stuff. 
+    let cryptoWords = this.crypto.join('')
+      .replace(/[^A-Z']/g, ' ')
+      .replace(/\s\s/g, ' ')
+      .split(' ');
+    
+    let plaintextWords = this.plaintext.join('')
+    .replace(/[^A-Z']/g, ' ')
+    .replace(/\s\s/g, ' ')
+    .split(' '); 
+
+    if (cryptoWords.length !== plaintextWords.length) {
+      console.error('crypto length and plaintext length does not match');
+      return;
+    }
+
+    console.log(cryptoWords, plaintextWords);
+    this.sugestions = {};
+    for (let i = 0; i < cryptoWords.length; i++) {
+      if (!this.sugestions[cryptoWords[i]]) {
+        this.sugestions[cryptoWords[i]] = DictionaryService.getSugestions(cryptoWords[i], plaintextWords[i]).join();
+      }
+    }
+
   }
 
 }

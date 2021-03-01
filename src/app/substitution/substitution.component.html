@@ -36,8 +36,12 @@
                     <input [ngClass]="{'changed' : plaintext[i] !== crypto[i]}" *ngIf="p!==' '" name="{{'plain_'+i}}" [(ngModel)]="plaintext[i]" (keyup)="onPlaintextKeyUp($event, i)" />
                 </td>
             </tr>
-            <tr>
-                <th><button mat-stroked-button color="warn" type="button" (click)="reset()">Reset</button></th>
+        </table>
+        <button mat-stroked-button color="warn" type="button" style="margin-right:5px" (click)="reset()">Reset</button>
+        <button mat-stroked-button type="button" (click)="getSugestions()">Get sugestions</button>
+        <table>
+            <tr *ngFor="let sugestion of sugestions | keyvalue:keepOriginalOrder">
+                <th>{{sugestion.key}}</th><td>{{sugestion.value}}</td>
             </tr>
         </table>
         
