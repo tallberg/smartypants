@@ -39,21 +39,38 @@ export class SubstitutionComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(): void {
-    console.log('ngOnChanges');
-    this.showSubstitution = this.input.length >= 8 && (this.input.match(/ /g) || []).length >= 2; // at least 8 chars including 2 spaces
+    this.showSubstitution = this.mightBeASubstitutionCipher();
+    if (!this.showSubstitution) {
+      return;
+    }
+    
     // this.fibonacci = SubstitutionService.fibonacci(this.input);
-    console.log(this.input.length, this.input.match(/ /g) , (this.input.match(/ /g) || []).length, this.showSubstitution.toString());
-
     this.atbash = SubstitutionService.atbash(this.input);
     this.caesar = SubstitutionService.caesar(this.input);
-    SubstitutionService.testVigenere();
     this.crypto = this.input.split('');
     this.onSubstitutionChange();
+    
+    // SubstitutionService.testVigenere();
     // SubstitutionService.testDelimit();
   }
 
+  mightBeASubstitutionCipher(): boolean {
+    // 8 chars A-Z+space, at least 2 spaces
+    var spaces = (this.input.match(/ /g) || []).length
+    if (/^[a-z ]{8,}/i.test(this.input) == false || spaces < 2) {
+      return false;
+    }
+
+    // < 50% dictionary words out of first 'wordsToCheck'
+    var wordsToCheck = Math.min(this.input.length, 10);
+    var existingWords = this.input.split(' ').slice(0, wordsToCheck)
+      .map((word: string) : number => DictionaryService.exists(word) ? 1 : 0)
+      .reduce((a: number, b: number) => a + b);
+    
+    return existingWords*2 < wordsToCheck;
+  }
+
   onSubstitutionChange() {
-    console.log('substitution change');
     this.plaintext = this.crypto.map(x => {
       let i = this.substitution.indexOf(x);
       if (this.substitution[i] === this.alphabet[i]) {

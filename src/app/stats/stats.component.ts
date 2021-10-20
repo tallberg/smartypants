@@ -9,6 +9,7 @@ import { Occurances, StatisticsService } from '../shared/services/statistics.ser
 
 export class StatsComponent implements OnInit, OnChanges {
   @Input() input: string;
+  showStats = false;
   characterStatistics = "";
   charUnigram = "";
   wordUnigram = "";
@@ -19,6 +20,7 @@ export class StatsComponent implements OnInit, OnChanges {
   ngOnInit(): void { }
 
   ngOnChanges(): void {
+    this.showStats = this.input.length > 0;
     this.updateCharacterStatistics();
     this.updateCharUnigram();
     this.updateWordUnigram();

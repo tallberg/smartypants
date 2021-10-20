@@ -55,6 +55,11 @@ export class DictionaryService {
     return stat;
   }
 
+
+  public static exists(word: string): boolean {
+    return this.dictionary[word.length]?.indexOf(word) != -1;
+  }
+
   /**
    * 
    * @param cryptoText Original crypto text

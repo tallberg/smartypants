@@ -678,7 +678,6 @@ export class SubstitutionService {
       });
     }
     const best = Tools.evaluate(solutions, alpha);
-    console.log('Fibonacci best result', best);
     return best.result;
   }
 
@@ -689,7 +688,6 @@ export class SubstitutionService {
    */
   public static caesar(cipher: string): solution {
     const best = RotN.solve(cipher.toLocaleUpperCase());
-    console.log('Caesar best result', best); 
     return best;
   }
 
