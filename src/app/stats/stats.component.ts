@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnChanges, } from '@angular/core';
-import { occurances, StatisticsService } from '../shared/services/statistics.service';
+import { Occurances, StatisticsService } from '../shared/services/statistics.service';
 
 @Component({
   selector: 'app-stats',

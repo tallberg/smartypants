@@ -11,9 +11,9 @@ export class AppComponent {
   // public input = "1rUHjDnJs09VNvxLiWZzL7PXeKUHvxFVG5GT59WdS6nvOZ1UypVbKlQTcl4orHFShQMBCFGH8+4+SlFDDv4+dUIcmd3zyaBnsXKCb9lMuGmMJkslgPFvgPKNWGsSVu4BhI6/42dGG3q0Lca465xeDaEKTj3Yan/59/+D5Sd6Cha3qwEWoITbR8zFgFNcOVLR"; // unknown
   // public input = "TCQYI VN UB MOAL NNZ"; // fibo cipher
   // public input = "N VJ DCBSXNIP SVCV RITEXGCNHI"; // reverse + shift
-  public input = "VUM, PBAQ AQ I QPURK IXX IHUOP BUM WK XADE CUP DXATTEF-PORVEF OTQAFE FUMV"; // reverse shift
+  // public input = "VUM, PBAQ AQ I QPURK IXX IHUOP BUM WK XADE CUP DXATTEF-PORVEF OTQAFE FUMV"; // reverse shift
   // public input = "Yxmördaren Julia Blomqvist på fäktning i Schweiz";  
-
+  public input = "";
 
   onInputKeyUp(event: KeyboardEvent) {
     if (event.altKey) {

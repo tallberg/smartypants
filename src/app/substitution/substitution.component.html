@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card *ngIf="showSubstitution">
     <mat-card-title>
         Simple substitution chipher
     </mat-card-title>
@@ -41,7 +41,11 @@
         <button mat-stroked-button type="button" (click)="getSugestions()">Get sugestions</button>
         <table>
             <tr *ngFor="let sugestion of sugestions | keyvalue:keepOriginalOrder">
-                <th>{{sugestion.key}}</th><td>{{sugestion.value}}</td>
+                <th>{{sugestion.key}}</th><td>
+                    <button mat-button 
+                        *ngFor="let val of sugestion.value" 
+                        (click)="useSugestion(sugestion.key,val)">{{val}}</button>
+                </td>
             </tr>
         </table>
         

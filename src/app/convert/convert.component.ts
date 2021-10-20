@@ -1,5 +1,4 @@
-import { analyzeAndValidateNgModules } from '@angular/compiler';
-import { Component, OnInit, OnChanges, Input, ɵSWITCH_COMPILE_DIRECTIVE__POST_R3__ } from '@angular/core';
+import { Component, OnInit, OnChanges, Input } from '@angular/core';
 
 export interface convertion {
   from: string;
@@ -20,6 +19,7 @@ export class ConvertComponent implements OnInit, OnChanges {
   rxInt = /^[0-9\s]+$/;
   rxHex = /^[a-f0-9\s]+|[A-F0-9\s]]$/;
   rxBin = /^[01\s]+$/i;
+  rxPrintable = /^[\t\r\n\u0020-\u007e\u00a0-\u00ff]*$/;
 
   constructor() { }
 
@@ -27,17 +27,21 @@ export class ConvertComponent implements OnInit, OnChanges {
   }
 
   /** 
-   * Make a fair confirmation that a string is b64 encoded
-   * A base 64 string includes at least one lowercase and uppercase character, a number 
-   * and includes a special char + / or ends with = 
-   * @param b64
+   * Make a fair confirmation that a string is base64 encoded (or base64url)
+   * @param b64 the assumed b64 encoded text
+   * @param certainty 1 lowest 5 highest. 5 causes >2/3 false negatives, may be used to identify short strings
    * */ 
-  isB64(b64: string): boolean {
-    return /^[a-zA-Z0-9\+\/]+=?=?$/.test(b64) 
-      && /[a-z]/.test(b64) 
-      && /[A-Z]/.test(b64) 
-      && /[0-9]/.test(b64) 
-      && (/[\+\/]/.test(b64) || /=$/.test(b64));
+  isB64(b64: string, certainty: 1|2|3|4|5 = 4): boolean {
+    return (/^[a-zA-Z0-9\+\/]+=?=?$/.test(b64) || /^[a-zA-Z0-9\-_]+=?=?$/.test(b64))
+      && (Number(/[a-z]/.test(b64))
+      + Number(/[A-Z]/.test(b64))
+      + Number(/[0-9]/.test(b64))
+      + Number(/[\+\/-_]/.test(b64))
+      + Number(/=$/.test(b64)) >= certainty)
+  }
+
+  mayBeB64(b64: string): boolean  {
+    return this.isB64(b64, 3);
   }
 
   ngOnChanges(): void {
@@ -49,6 +53,7 @@ export class ConvertComponent implements OnInit, OnChanges {
     if (this.isB64(this.input)) {
       this.fromB64(this.input);      
     } else {
+      this.fromB64(this.input);
       this.fromBin(this.input);
       this.fromInt(this.input);
       this.fromHex(this.input);
@@ -137,12 +142,10 @@ fromText(text: string) {
 }
 
 fromB64(b64: string)  {
-  if (b64.length < 5 && /^[a-zA-Z0-1\+\/]+=?=?$/.test(b64) === false) { return; } 
-  const printableRx = /^[\t\r\n\u0020-\u007e\u00a0-\u00ff]*$/;
-  console.log(b64);
+  if (!this.mayBeB64(b64)) { return; }
+  b64 = b64.replace(/-/g,'+').replace(/_/g,'\\'); //convert b64url to b64
   const text = btoa(b64);
-  console.log(text);
-  if (printableRx.test(text)) {
+  if (this.rxPrintable.test(text)) {
     this.tmpConversions.push({from: 'Base64', to: 'Text', value: text});
   }
   const ascii = text.split('').map(c => c.charCodeAt(0));
