@@ -16,8 +16,9 @@ export class ConvertComponent implements OnInit, OnChanges {
   @Input() input: string;
   public conversions: convertion[];
   tmpConversions: convertion[];
+  rxNthAlpha = /^(\d.|1\d.|2[0-6].)+(\d|1\d|2[0-6])?$/;
   rxInt = /^[0-9\s]+$/;
-  rxHex = /^[a-f0-9\s]+|[A-F0-9\s]]$/;
+  rxHex = /^[a-fA-F0-9\s]$/;
   rxBin = /^[01\s]+$/i;
   rxPrintable = /^[\t\r\n\u0020-\u007e\u00a0-\u00ff]*$/;
 
@@ -53,6 +54,7 @@ export class ConvertComponent implements OnInit, OnChanges {
     if (this.isB64(this.input)) {
       this.fromB64(this.input);      
     } else {
+      this.fromNthAlpha(this.input);
       this.fromB64(this.input);
       this.fromBin(this.input);
       this.fromInt(this.input);
@@ -60,6 +62,15 @@ export class ConvertComponent implements OnInit, OnChanges {
       this.fromText(this.input);  
     }
     this.conversions = this.tmpConversions;
+  }
+
+  fromNthAlpha(ns: string): void {
+    if (!this.rxNthAlpha.test(ns)) {
+      return;
+    }
+    let words = ns.split(/\s/);
+    words = words.map(word => word.split(/[^0-9]/).map(c => c && String.fromCharCode(+c + 64)).join(''));
+    this.tmpConversions.push({from: 'Nth Alpha', to: 'Text', value: words.join(' ')});
   }
 
   fromInt(int: string): void {     
