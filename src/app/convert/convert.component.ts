@@ -155,7 +155,7 @@ fromText(text: string) {
 fromB64(b64: string)  {
   if (!this.mayBeB64(b64)) { return; }
   b64 = b64.replace(/-/g,'+').replace(/_/g,'\\'); //convert b64url to b64
-  const text = btoa(b64);
+  const text = atob(b64);
   if (this.rxPrintable.test(text)) {
     this.tmpConversions.push({from: 'Base64', to: 'Text', value: text});
   }
