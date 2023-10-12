@@ -39,7 +39,7 @@ export class SubstitutionComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(): void {
-    this.showSubstitution = this.mightBeASubstitutionCipher();
+    this.showSubstitution ||= this.mightBeASubstitutionCipher();
     if (!this.showSubstitution) {
       return;
     }

@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button'
+import {MatExpansionModule} from '@angular/material/expansion';
 
 import { AppComponent } from './app.component';
 import { StatsComponent } from './stats/stats.component';
@@ -31,6 +32,7 @@ import { SubstitutionComponent } from './substitution/substitution.component';
     MatCardModule,
     MatButtonModule,
     MatFormFieldModule,
+    MatExpansionModule,
     FormsModule,
     ChartsModule
   ],

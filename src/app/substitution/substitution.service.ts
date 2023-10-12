@@ -335,7 +335,7 @@ export class Tools {
     return bis;
   }
 
-  public static evaluate(solutions: solution[], alpha: string, delimiter?: string): any {
+  public static evaluate(solutions: solution[], alpha: string, delimiter?: string): solution {
     const uniStats = this.stats.en.unigram; //TODO 
     const biStats = Object.keys(this.stats.en.bigram);
     const biBottom = this.stats.en.bigramBottom;
@@ -351,7 +351,7 @@ export class Tools {
       solution.stats = {};
       if (sol.length < 3) {
         console.error('evaluate cannot operate on string length below 3', solution); 
-        return {};
+        return null;
       }
       
       // Unigram
@@ -449,6 +449,21 @@ export class Tools {
     return result;
   }
 
+  /**
+   * Change an all upper case string to mirror the caseing of another string  
+   * @param orig Original string to be mirrored
+   * @param target Upper case string to be changed
+   */
+  public static mirrorCase(orig: string, target: string) {
+    if (orig.length != target.length) {
+      console.error('Original and target is not the same length', orig, target);
+      return target;
+    }
+    var toLower = orig.split('').map(x => x != x.toLocaleUpperCase());
+    var mirrored = target.split('').map((v,i) => toLower[i] ? v.toLocaleLowerCase() : v).join('');
+    return mirrored;
+  }
+
 }
 
 export class OneTimePad {
@@ -521,12 +536,15 @@ export class RotN {
     const alpha = this._alphabet;    
     let result = "";
     for (let i = 0; i < plaintext.length; i++) {
-      let char = plaintext.charAt(i);
+      let char = plaintext.charAt(i).toLocaleUpperCase();
       if(alpha.indexOf(char) == -1) {
         result += char;
       }
       else {
-        result += alpha.charAt((alpha.indexOf(char) + shift) % alpha.length);
+        let lowercase = char != plaintext.charAt(i);
+        result += lowercase 
+          ? alpha.charAt((alpha.indexOf(char) + shift) % alpha.length).toLocaleLowerCase()
+          : alpha.charAt((alpha.indexOf(char) + shift) % alpha.length);
       }
     }
     return result;
@@ -561,7 +579,7 @@ export class RotN {
 
 
   public static solve(cipher: string) {
-    const best = Tools.evaluate(this.all(cipher), this._alphabet);
+    const best = Tools.evaluate(this.all(cipher.toLocaleUpperCase()), this._alphabet);
     return best;
   }
 
@@ -674,7 +692,7 @@ export class SubstitutionService {
     for (let i = 0; i <= 5; i++) {
       solutions.push({
         key: i,
-        result: OneTimePad.decrypt(cipher, key.substr(i))
+        result: OneTimePad.decrypt(cipher, key.substring(i))
       });
     }
     const best = Tools.evaluate(solutions, alpha);
@@ -687,7 +705,8 @@ export class SubstitutionService {
    * @param cipher 
    */
   public static caesar(cipher: string): solution {
-    const best = RotN.solve(cipher.toLocaleUpperCase());
+    const best = RotN.solve(cipher);
+    best.result = Tools.mirrorCase(cipher, best.result);
     return best;
   }
 
@@ -695,10 +714,11 @@ export class SubstitutionService {
    * Decrypt cipher using Atbash
    * The Atbash cipher is a particular type of monoalphabetic cipher formed by taking the alphabet (or abjad, syllabary, etc.) and mapping it to its reverse, so that the first letter becomes the last letter, the second letter becomes the second to last letter, and so on.
    * https://en.wikipedia.org/wiki/Atbash
-   * @param chipher 
+   * @param cipher 
    */
-  public static atbash(chipher: string): string {
-    return Deranged.encrypt(chipher.toLocaleUpperCase(), this._alphabet.split('').reverse().join(''));
+  public static atbash(cipher: string): string {
+    var res = Deranged.encrypt(cipher.toLocaleUpperCase(), this._alphabet.split('').reverse().join(''));
+    return Tools.mirrorCase(cipher, res);
   }
 
 }
